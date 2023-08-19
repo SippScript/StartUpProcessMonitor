@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 
 public class StartUpProcessMonitor extends JavaPlugin implements Listener {
@@ -59,15 +58,19 @@ public class StartUpProcessMonitor extends JavaPlugin implements Listener {
             FileWriter writer = new FileWriter(file);
             for (Map.Entry<String, Long> entry : pluginEnableTimes.entrySet()) {
                 String pluginName = entry.getKey();
-                double enableTimeMillis = entry.getValue();
-                double enableTimeSeconds = TimeUnit.SECONDS.convert((int) enableTimeMillis, TimeUnit.SECONDS);
-                writer.write(pluginName + " - " + enableTimeSeconds + " seconds\n");
+                long enableTimeNano = entry.getValue();
+                double elapsedTimeSeconds = (System.nanoTime() - enableTimeNano) / 1e9; // Convert to seconds
+                writer.write(pluginName + " - " + formatElapsedTime(elapsedTimeSeconds) + " seconds\n");
             }
             writer.close();
             getLogger().info("Log file created: " + file.getAbsolutePath());
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private String formatElapsedTime(double elapsedTime) {
+        return String.format("%.3f seconds", elapsedTime);
     }
 
 }

@@ -1,0 +1,5 @@
+name: StartUpProcessMonitor
+version: '${project.version}'
+main: hashbit.startupprocessmonitor.StartUpProcessMonitor
+api-version: '1.20'
+load: STARTUP
